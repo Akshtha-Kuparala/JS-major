@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eCommerce Website</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: #ffffff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+        .container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 70px;
+        }
+        #sidebar {
+            width: 250px;
+            background: #ffffff;
+            padding: 20px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        #sidebar.hidden {
+            transform: translateX(-100%);
+        }
+        #sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        #sidebar ul li {
+            padding: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+            border-radius: 5px;
+        }
+        #sidebar ul li:hover {
+            background: #f0f0f0;
+        }
+        main {
+            flex-grow: 1;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .product-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 200px;
+            transition: transform 0.2s;
+        }
+        .product-card:hover {
+            transform: scale(1.05);
+        }
+        .product-card img {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .add-to-cart {
+            margin-top: 10px;
+            background: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .cart {
+            cursor: pointer;
+            font-size: 1.2em;
+        }
+        footer {
+            margin-top: 20px;
+            padding: 10px;
+            background: #fff;
+            text-align: center;
+            width: 100%;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+        }
+        #toggle-sidebar {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+    </style>
+    <script defer>
+        document.addEventListener("DOMContentLoaded", () => {
+            const sidebar = document.getElementById("sidebar");
+            const toggleButton = document.getElementById("toggle-sidebar");
+            const cartCount = document.getElementById("cart-count");
+            const productsContainer = document.getElementById("products");
+            let cart = 0;
+
+            toggleButton.addEventListener("click", () => {
+                sidebar.classList.toggle("hidden");
+            });
+
+            const products = [
+                {name: "Laptop", price: "$999", img: "https://via.placeholder.com/200"},
+                {name: "Headphones", price: "$199", img: "https://via.placeholder.com/200"},
+                {name: "Smartphone", price: "$799", img: "https://via.placeholder.com/200"},
+                {name: "Book", price: "$29", img: "https://via.placeholder.com/200"}
+            ];
+
+            function displayProducts() {
+                productsContainer.innerHTML = "";
+                products.forEach(product => {
+                    const productCard = document.createElement("div");
+                    productCard.classList.add("product-card");
+                    productCard.innerHTML = `
+                        <img src="${product.img}" alt="${product.name}">
+                        <h3>${product.name}</h3>
+                        <p>${product.price}</p>
+                        <button class="add-to-cart">Add to Cart</button>
+                    `;
+                    productsContainer.appendChild(productCard);
+                });
+            }
+            displayProducts();
+
+            document.addEventListener("click", event => {
+                if (event.target.classList.contains("add-to-cart")) {
+                    cart++;
+                    cartCount.textContent = cart;
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <header>
+        <button id="toggle-sidebar">☰</button>
+        <h1>eCommerce Store</h1>
+        <div class="cart">
+            🛒 <span id="cart-count">0</span>
+        </div>
+    </header>
+    
+    <div class="container">
+        <nav id="sidebar" class="hidden">
+            <ul>
+                <li data-category="electronics">Electronics</li>
+                <li data-category="clothing">Clothing</li>
+                <li data-category="home">Home</li>
+                <li data-category="books">Books</li>
+            </ul>
+        </nav>
+        
+        <main id="products">
+            <!-- Products will be dynamically loaded here -->
+        </main>
+    </div>
+    
+    <footer>
+        <p>&copy; 2025 eCommerce Store. All rights reserved.</p>
+    </footer>
+</body>
+</html>
