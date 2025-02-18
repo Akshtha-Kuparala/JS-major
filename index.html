@@ -3,47 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>eCommerce Store</title>
+    <title>Minimal eCommerce</title>
     <style>
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: #fff;
-            color: #000;
+            background: white;
+            color: black;
         }
         header {
-            width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 15px 20px;
-            background: #000;
-            color: #fff;
+            background: black;
+            color: white;
             position: fixed;
+            width: 100%;
             top: 0;
             left: 0;
-            right: 0;
             z-index: 1000;
         }
         .container {
             display: flex;
-            width: 100%;
-            max-width: 1200px;
             margin-top: 70px;
         }
         #sidebar {
             width: 250px;
-            background: #fff;
+            background: black;
+            color: white;
             padding: 20px;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
         }
         #sidebar ul {
             list-style: none;
             padding: 0;
+        }
+        #sidebar ul li {
+            padding: 10px;
+            cursor: pointer;
         }
         main {
             flex-grow: 1;
@@ -56,70 +54,93 @@
         .product-card {
             background: white;
             padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid black;
             text-align: center;
             width: 200px;
-            transition: transform 0.2s;
+        }
+        .add-to-cart {
+            margin-top: 10px;
+            background: black;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
         }
         .search-bar {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            margin: 10px;
+            padding: 5px;
+            width: 50%;
         }
     </style>
-    <script defer>
-        document.addEventListener("DOMContentLoaded", () => {
-            const productsContainer = document.getElementById("products");
-            const searchBar = document.getElementById("search");
-
-            const products = [
-                {name: "Laptop", price: "$999", img: "https://via.placeholder.com/200"},
-                {name: "Headphones", price: "$199", img: "https://via.placeholder.com/200"},
-                {name: "Smartphone", price: "$799", img: "https://via.placeholder.com/200"},
-                {name: "Book", price: "$29", img: "https://via.placeholder.com/200"}
-            ];
-
-            function displayProducts(filter = "") {
-                productsContainer.innerHTML = "";
-                products.filter(p => p.name.toLowerCase().includes(filter.toLowerCase()))
-                    .forEach(product => {
-                        const productCard = document.createElement("div");
-                        productCard.classList.add("product-card");
-                        productCard.innerHTML = `
-                            <img src="${product.img}" alt="${product.name}">
-                            <h3>${product.name}</h3>
-                            <p>${product.price}</p>
-                            <button class="add-to-cart">Add to Cart</button>
-                        `;
-                        productsContainer.appendChild(productCard);
-                    });
-            }
-            
-            searchBar.addEventListener("input", () => displayProducts(searchBar.value));
-            displayProducts();
-        });
-    </script>
 </head>
 <body>
     <header>
-        <h1>eCommerce Store</h1>
+        <h1>Minimal eCommerce</h1>
+        <input type="text" id="search" class="search-bar" placeholder="Search products...">
+        <div>Cart: <span id="cart-count">0</span></div>
     </header>
+    
     <div class="container">
         <nav id="sidebar">
             <ul>
-                <li>Electronics</li>
-                <li>Clothing</li>
-                <li>Home</li>
-                <li>Books</li>
+                <li data-category="all">All</li>
+                <li data-category="electronics">Electronics</li>
+                <li data-category="clothing">Clothing</li>
+                <li data-category="home">Home</li>
             </ul>
         </nav>
-        <main>
-            <input type="text" id="search" class="search-bar" placeholder="Search products...">
-            <div id="products"></div>
-        </main>
+        
+        <main id="products"></main>
     </div>
+    
+    <script>
+        const products = [
+            {name: "Laptop", category: "electronics", price: "$999", img: "https://via.placeholder.com/200"},
+            {name: "Phone", category: "electronics", price: "$699", img: "https://via.placeholder.com/200"},
+            {name: "T-Shirt", category: "clothing", price: "$19", img: "https://via.placeholder.com/200"},
+            {name: "Sofa", category: "home", price: "$299", img: "https://via.placeholder.com/200"},
+            {name: "Headphones", category: "electronics", price: "$199", img: "https://via.placeholder.com/200"}
+        ];
+        
+        const productsContainer = document.getElementById("products");
+        const cartCount = document.getElementById("cart-count");
+        let cart = 0;
+        
+        function displayProducts(filter = "all", search = "") {
+            productsContainer.innerHTML = "";
+            const filteredProducts = products.filter(p => (filter === "all" || p.category === filter) && p.name.toLowerCase().includes(search.toLowerCase()));
+            
+            filteredProducts.forEach(product => {
+                const productCard = document.createElement("div");
+                productCard.classList.add("product-card");
+                productCard.innerHTML = `
+                    <img src="${product.img}" alt="${product.name}">
+                    <h3>${product.name}</h3>
+                    <p>${product.price}</p>
+                    <button class="add-to-cart">Add to Cart</button>
+                `;
+                productsContainer.appendChild(productCard);
+            });
+        }
+        
+        document.getElementById("search").addEventListener("input", (e) => {
+            displayProducts("all", e.target.value);
+        });
+        
+        document.querySelectorAll("#sidebar ul li").forEach(li => {
+            li.addEventListener("click", () => {
+                displayProducts(li.getAttribute("data-category"));
+            });
+        });
+        
+        document.addEventListener("click", event => {
+            if (event.target.classList.contains("add-to-cart")) {
+                cart++;
+                cartCount.textContent = cart;
+            }
+        });
+        
+        displayProducts();
+    </script>
 </body>
 </html>
