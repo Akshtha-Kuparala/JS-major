@@ -4,8 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive eCommerce</title>
-    <link rel="stylesheet" href="styles.css">
-    <script defer src="script.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        header, footer {
+            width: 100%;
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+        .container {
+            display: flex;
+            width: 90%;
+            margin-top: 20px;
+        }
+        .sidebar {
+            width: 200px;
+            background: #f4f4f4;
+            padding: 10px;
+            transition: width 0.3s;
+        }
+        .sidebar.collapsed {
+            width: 50px;
+        }
+        .toggle-sidebar {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .product-area {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 10px;
+        }
+        .product-card {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .product-card:hover {
+            transform: scale(1.05);
+        }
+        .cart-icon {
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -24,13 +78,58 @@
             </ul>
         </aside>
         
-        <main class="product-area">
-            <div id="product-list"></div>
-        </main>
+        <main class="product-area" id="product-list"></main>
     </div>
     
     <footer>
         <p>&copy; 2025 eCommerce Store</p>
     </footer>
+
+    <script>
+        document.querySelector('.toggle-sidebar').addEventListener('click', function() {
+            document.querySelector('.sidebar').classList.toggle('collapsed');
+        });
+
+        const products = {
+            electronics: [
+                { title: "Laptop", price: "$1000" },
+                { title: "Smartphone", price: "$600" }
+            ],
+            clothing: [
+                { title: "T-Shirt", price: "$20" },
+                { title: "Jeans", price: "$40" }
+            ],
+            home: [
+                { title: "Sofa", price: "$500" },
+                { title: "Lamp", price: "$30" }
+            ],
+            books: [
+                { title: "Fiction", price: "$10" },
+                { title: "Science", price: "$15" }
+            ]
+        };
+
+        function displayProducts(category) {
+            const productList = document.getElementById("product-list");
+            productList.innerHTML = "";
+            products[category].forEach(product => {
+                const div = document.createElement("div");
+                div.classList.add("product-card");
+                div.innerHTML = `<h3>${product.title}</h3><p>${product.price}</p><button onclick="addToCart()">Add to Cart</button>`;
+                productList.appendChild(div);
+            });
+        }
+
+        document.querySelectorAll(".sidebar ul li").forEach(item => {
+            item.addEventListener("click", function() {
+                displayProducts(this.getAttribute("data-category"));
+            });
+        });
+
+        function addToCart() {
+            let count = parseInt(document.getElementById("cart-count").textContent);
+            document.getElementById("cart-count").textContent = count + 1;
+        }
+    </script>
 </body>
 </html>
