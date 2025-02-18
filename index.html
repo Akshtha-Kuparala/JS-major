@@ -159,15 +159,26 @@
             ]
         };
 
-        function displayProducts(category) {
+        function displayProducts(category = null) {
             const productList = document.getElementById("product-list");
             productList.innerHTML = "";
-            products[category].forEach(product => {
-                const div = document.createElement("div");
-                div.classList.add("product-card");
-                div.innerHTML = `<h3>${product.title}</h3><p>${product.price}</p><button onclick="addToCart()">Add to Cart</button>`;
-                productList.appendChild(div);
-            });
+            
+            if (category) {
+                products[category].forEach(product => {
+                    createProductCard(productList, product);
+                });
+            } else {
+                Object.values(products).flat().forEach(product => {
+                    createProductCard(productList, product);
+                });
+            }
+        }
+
+        function createProductCard(productList, product) {
+            const div = document.createElement("div");
+            div.classList.add("product-card");
+            div.innerHTML = `<h3>${product.title}</h3><p>${product.price}</p><button onclick="addToCart()">Add to Cart</button>`;
+            productList.appendChild(div);
         }
 
         document.querySelectorAll(".sidebar ul li").forEach(item => {
@@ -180,6 +191,10 @@
             let count = parseInt(document.getElementById("cart-count").textContent);
             document.getElementById("cart-count").textContent = count + 1;
         }
+
+        // Display all products by default
+        displayProducts();
     </script>
 </body>
 </html>
+
